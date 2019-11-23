@@ -1,0 +1,42 @@
+<mat-card *ngFor="let conf of config">
+	<mat-card-header>
+		<mat-card-title>{{conf.name}}</mat-card-title>
+		<mat-card-subtitle>{{conf.descrizione}}
+		</mat-card-subtitle>
+	</mat-card-header>
+	<div class="example-container">
+		<h2>Opzionale in</h2>
+
+		<div cdkDropList #optionalsList="cdkDropList" [cdkDropListData]="conf.optionals"
+			[cdkDropListConnectedTo]="[requiredList,readonlyList]" class="example-list"
+			(cdkDropListDropped)="drop($event)">
+			<div class="example-box" *ngFor="let item of conf.optionals" cdkDrag>{{item}}</div>
+		</div>
+	</div>
+
+	<div class="example-container">
+		<h2>Obbligatorio in</h2>
+
+		<div cdkDropList #requiredList="cdkDropList" [cdkDropListData]="conf.requireds"
+			[cdkDropListConnectedTo]="[optionalsList,readonlyList]" class="example-list"
+			(cdkDropListDropped)="drop($event)">
+			<div class="example-box" *ngFor="let item of conf.requireds" cdkDrag>{{item}}</div>
+		</div>
+	</div>
+
+	<div class="example-container">
+		<h2>Sola lettura in</h2>
+
+		<div cdkDropList #readonlyList="cdkDropList" [cdkDropListData]="conf.readonlys"
+			[cdkDropListConnectedTo]="[optionalsList,requiredList]" class="example-list"
+			(cdkDropListDropped)="drop($event)">
+			<div class="example-box" *ngFor="let item of conf.readonlys" cdkDrag>{{item}}</div>
+		</div>
+	</div>
+</mat-card>
+
+
+
+<!-- Copyright 2019 Google LLC. All Rights Reserved.
+    Use of this source code is governed by an MIT-style license that
+    can be found in the LICENSE file at http://angular.io/license -->
