@@ -21,7 +21,7 @@
 				[cdkDropListConnectedTo]="[requiredList,readonlyList]" class="example-list"
 				(cdkDropListDropped)="drop($event)">
 				<div class="example-box" *ngFor="let item of filtraAzioni(conf.optionals)" cdkDrag>{{item.nome}} ({{item.tipo}}) -
-					{{item.fkFlow}}</div>
+					{{GetNomeFlusso(item.fkFlow)}}</div>
 			</div>
 			<button mat-button color="primary" (click)="Spostatutti(conf,'optionals')">Tutte</button>
 			<button mat-button color="primary" (click)="SpostaFinali(conf,'optionals')">Finali</button>
@@ -34,7 +34,7 @@
 				[cdkDropListConnectedTo]="[optionalsList,readonlyList]" class="example-list"
 				(cdkDropListDropped)="drop($event)">
 				<div class="example-box" *ngFor="let item of filtraAzioni(conf.requireds)" cdkDrag>{{item.nome}} ({{item.tipo}}) -
-					{{item.fkFlow}}</div>
+					{{GetNomeFlusso(item.fkFlow)}}</div>
 			</div>
 			<button mat-button color="primary" (click)="Spostatutti(conf,'requireds')">Tutte</button>
 			<button mat-button color="primary" (click)="SpostaFinali(conf,'requireds')">Finali</button>
@@ -47,7 +47,7 @@
 				[cdkDropListConnectedTo]="[optionalsList,requiredList]" class="example-list"
 				(cdkDropListDropped)="drop($event)">
 				<div class="example-box" *ngFor="let item of filtraAzioni(conf.readonlys)" cdkDrag>{{item.nome}} ({{item.tipo}}) -
-					{{item.fkFlow}}</div>
+					{{GetNomeFlusso(item.fkFlow)}}</div>
 			</div>
 			<button mat-button color="primary" (click)="Spostatutti(conf,'readonlys')">Tutte</button>
 			<button mat-button color="primary" (click)="SpostaFinali(conf,'readonlys')">Finali</button>

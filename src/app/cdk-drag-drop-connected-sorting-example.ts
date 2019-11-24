@@ -66,6 +66,10 @@ export class CdkDragDropConnectedSortingExample {
     {id: 3, name: 'Terzo'},
   ]
 
+  GetNomeFlusso(id: number): string {
+    return this.flussi.filter(fl => fl.id == id)[0].name;
+  };
+
   flussiSelezionati: number[]= [];
 
   filtraAzioni(azioni: Azione[]): Azione[] {  
