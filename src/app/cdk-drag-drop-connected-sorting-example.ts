@@ -5,6 +5,19 @@ import {
   transferArrayItem
 } from "@angular/cdk/drag-drop";
 
+interface Config {
+  name: string;
+  descrizione: string;
+  optionals: Azione[];
+  requireds: Azione[];
+  readonlys: Azione[];
+}
+
+interface Azione {
+  nome: string;
+  tipo: string;
+}
+
 /**
  * @title Drag&Drop connected sorting
  */
@@ -18,24 +31,76 @@ export class CdkDragDropConnectedSortingExample {
     {
       name: "Campo 1",
       descrizione: "Primo campo",
-      optionals: ["Get to work", "Pick up groceries", "Go home", "Fall asleep"],
+      optionals: [
+        { nome: "Get to work", tipo: "I" },
+        { nome: "Fall asleep", tipo: "F" }
+      ],
       requireds: [
-        "Get up",
-        "Brush teeth",
-        "Take a shower",
-        "Check e-mail",
-        "Walk dog"
+        { nome: "Get up", tipo: "I" },
+        { nome: "Brush teeth", tipo: "I" }
       ],
       readonlys: []
     },
     {
       name: "Campo 2",
       descrizione: "Primo campo",
-      optionals: ["Pippo","Pluto","Paperino"],
+      optionals: [
+        { nome: "Pippo", tipo: "I" },
+        { nome: "Pluto", tipo: "F" },
+        { nome: "Paperino", tipo: "F" }
+      ],
       requireds: [],
       readonlys: []
     }
   ];
+
+  Spostatutti(config: Config, destList: string) {
+    if (destList == "optionals") {
+      config.optionals = config.optionals
+        .concat(config.requireds)
+        .concat(config.readonlys);
+      config.requireds = [];
+      config.readonlys = [];
+    }
+    if (destList == "requireds") {
+      config.requireds = config.requireds
+        .concat(config.optionals)
+        .concat(config.readonlys);
+      config.optionals = [];
+      config.readonlys = [];
+    }
+    if (destList == "readonlys") {
+      config.readonlys = config.readonlys
+        .concat(config.requireds)
+        .concat(config.optionals);
+      config.requireds = [];
+      config.optionals = [];
+    }
+  }
+
+  SpostaFinali(config: Config, destList: string) {
+    if (destList == "optionals") {
+      config.optionals = config.optionals
+        .concat(config.requireds.filter(x => x.tipo == "F"))
+        .concat(config.readonlys.filter(x => x.tipo == "F"));
+      config.requireds = config.requireds.filter(x => x.tipo != "F");
+      config.readonlys = config.readonlys.filter(x => x.tipo != "F");
+    }
+    if (destList == "requireds") {
+      config.requireds = config.requireds
+        .concat(config.optionals.filter(x => x.tipo == "F"))
+        .concat(config.readonlys.filter(x => x.tipo == "F"));
+      config.optionals = config.optionals.filter(x => x.tipo != "F");
+      config.readonlys = config.readonlys.filter(x => x.tipo != "F");
+    }
+    if (destList == "readonlys") {
+      config.readonlys = config.readonlys
+        .concat(config.requireds.filter(x => x.tipo == "F"))
+        .concat(config.optionals.filter(x => x.tipo == "F"));
+      config.requireds = config.requireds.filter(x => x.tipo != "F");
+      config.optionals = config.optionals.filter(x => x.tipo != "F");
+    }
+  }
 
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
