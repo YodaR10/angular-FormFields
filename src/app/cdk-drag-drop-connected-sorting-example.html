@@ -1,45 +1,58 @@
+<mat-card style="margin-bottom: 10px;">
+	<mat-card-content>
+		<mat-form-field>
+			<mat-label>Flusso</mat-label>
+			<mat-select [(value)]="flussiSelezionati" name="selezioneFlussi" multiple>
+				<mat-option *ngFor="let flusso of flussi" [value]="flusso.id">{{flusso.name}}</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</mat-card-content>
+</mat-card>
 <mat-card style="margin-bottom: 10px;" *ngFor="let conf of config">
 	<mat-card-header>
 		<mat-card-title>{{conf.name}}</mat-card-title>
 		<mat-card-subtitle>{{conf.descrizione}}
 		</mat-card-subtitle>
 	</mat-card-header>
-  <mat-card-content>
-	<div class="example-container">
-		<h2>Opzionale in</h2>
-		<div cdkDropList #optionalsList="cdkDropList" [cdkDropListData]="conf.optionals"
-			[cdkDropListConnectedTo]="[requiredList,readonlyList]" class="example-list"
-			(cdkDropListDropped)="drop($event)">
-			<div class="example-box" *ngFor="let item of conf.optionals" cdkDrag>{{item.nome}} ({{item.tipo}})</div>
+	<mat-card-content>
+		<div class="example-container">
+			<h2>Opzionale in</h2>
+			<div cdkDropList #optionalsList="cdkDropList" [cdkDropListData]="conf.optionals"
+				[cdkDropListConnectedTo]="[requiredList,readonlyList]" class="example-list"
+				(cdkDropListDropped)="drop($event)">
+				<div class="example-box" *ngFor="let item of filtraAzioni(conf.optionals)" cdkDrag>{{item.nome}} ({{item.tipo}}) -
+					{{item.fkFlow}}</div>
+			</div>
+			<button mat-button color="primary" (click)="Spostatutti(conf,'optionals')">Tutte</button>
+			<button mat-button color="primary" (click)="SpostaFinali(conf,'optionals')">Finali</button>
 		</div>
-    <button mat-button color="primary" (click)="Spostatutti(conf,'optionals')">Tutte</button>
-    <button mat-button color="primary" (click)="SpostaFinali(conf,'optionals')">Finali</button>
-	</div>
 
-	<div class="example-container">
-		<h2>Obbligatorio in</h2>
+		<div class="example-container">
+			<h2>Obbligatorio in</h2>
 
-		<div cdkDropList #requiredList="cdkDropList" [cdkDropListData]="conf.requireds"
-			[cdkDropListConnectedTo]="[optionalsList,readonlyList]" class="example-list"
-			(cdkDropListDropped)="drop($event)">
-			<div class="example-box" *ngFor="let item of conf.requireds" cdkDrag>{{item.nome}} ({{item.tipo}})</div>
+			<div cdkDropList #requiredList="cdkDropList" [cdkDropListData]="conf.requireds"
+				[cdkDropListConnectedTo]="[optionalsList,readonlyList]" class="example-list"
+				(cdkDropListDropped)="drop($event)">
+				<div class="example-box" *ngFor="let item of filtraAzioni(conf.requireds)" cdkDrag>{{item.nome}} ({{item.tipo}}) -
+					{{item.fkFlow}}</div>
+			</div>
+			<button mat-button color="primary" (click)="Spostatutti(conf,'requireds')">Tutte</button>
+			<button mat-button color="primary" (click)="SpostaFinali(conf,'requireds')">Finali</button>
 		</div>
-    <button mat-button color="primary" (click)="Spostatutti(conf,'requireds')">Tutte</button>
-    <button mat-button color="primary" (click)="SpostaFinali(conf,'requireds')">Finali</button>
-	</div>
 
-	<div class="example-container">
-		<h2>Sola lettura in</h2>
+		<div class="example-container">
+			<h2>Sola lettura in</h2>
 
-		<div cdkDropList #readonlyList="cdkDropList" [cdkDropListData]="conf.readonlys"
-			[cdkDropListConnectedTo]="[optionalsList,requiredList]" class="example-list"
-			(cdkDropListDropped)="drop($event)">
-			<div class="example-box" *ngFor="let item of conf.readonlys" cdkDrag>{{item.nome}} ({{item.tipo}})</div>
+			<div cdkDropList #readonlyList="cdkDropList" [cdkDropListData]="conf.readonlys"
+				[cdkDropListConnectedTo]="[optionalsList,requiredList]" class="example-list"
+				(cdkDropListDropped)="drop($event)">
+				<div class="example-box" *ngFor="let item of filtraAzioni(conf.readonlys)" cdkDrag>{{item.nome}} ({{item.tipo}}) -
+					{{item.fkFlow}}</div>
+			</div>
+			<button mat-button color="primary" (click)="Spostatutti(conf,'readonlys')">Tutte</button>
+			<button mat-button color="primary" (click)="SpostaFinali(conf,'readonlys')">Finali</button>
 		</div>
-    <button mat-button color="primary" (click)="Spostatutti(conf,'readonlys')">Tutte</button>
-    <button mat-button color="primary" (click)="SpostaFinali(conf,'readonlys')">Finali</button>
-	</div>
-  </mat-card-content>
+	</mat-card-content>
 </mat-card>
 
 

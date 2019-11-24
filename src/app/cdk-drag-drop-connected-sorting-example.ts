@@ -16,6 +16,12 @@ interface Config {
 interface Azione {
   nome: string;
   tipo: string;
+  fkFlow: number;
+}
+
+interface Flusso {
+  id: number;
+  name: string;
 }
 
 /**
@@ -32,12 +38,12 @@ export class CdkDragDropConnectedSortingExample {
       name: "Campo 1",
       descrizione: "Primo campo",
       optionals: [
-        { nome: "Get to work", tipo: "I" },
-        { nome: "Fall asleep", tipo: "F" }
+        { nome: "Get to work", tipo: "I", fkFlow: 1 },
+        { nome: "Fall asleep", tipo: "F", fkFlow: 2 }
       ],
       requireds: [
-        { nome: "Get up", tipo: "I" },
-        { nome: "Brush teeth", tipo: "I" }
+        { nome: "Get up", tipo: "I", fkFlow: 1 },
+        { nome: "Brush teeth", tipo: "I", fkFlow: 2 }
       ],
       readonlys: []
     },
@@ -45,60 +51,78 @@ export class CdkDragDropConnectedSortingExample {
       name: "Campo 2",
       descrizione: "Primo campo",
       optionals: [
-        { nome: "Pippo", tipo: "I" },
-        { nome: "Pluto", tipo: "F" },
-        { nome: "Paperino", tipo: "F" }
+        { nome: "Pippo", tipo: "I", fkFlow: 1 },
+        { nome: "Pluto", tipo: "F", fkFlow: 2 },
+        { nome: "Paperino", tipo: "F", fkFlow: 3 }
       ],
       requireds: [],
       readonlys: []
     }
   ];
 
+  flussi: Flusso[]= [
+    {id: 1, name: 'Primo'},
+    {id: 2, name: 'Secondo'},
+    {id: 3, name: 'Terzo'},
+  ]
+
+  flussiSelezionati: number[]= [];
+
+  filtraAzioni(azioni: Azione[]): Azione[] {  
+    return azioni.filter(i => this.flussiSelezionati.indexOf(i.fkFlow) > -1);
+  }
+  filtraAltreAzioni(azioni: Azione[]): Azione[] {  
+    return azioni.filter(i => this.flussiSelezionati.indexOf(i.fkFlow) == -1);
+  }
+  filtraAltreAzioniONonFinali(azioni: Azione[]): Azione[] {  
+    return azioni.filter(i => this.flussiSelezionati.indexOf(i.fkFlow) == -1 || i.tipo != 'F');
+  }
+
   Spostatutti(config: Config, destList: string) {
     if (destList == "optionals") {
       config.optionals = config.optionals
-        .concat(config.requireds)
-        .concat(config.readonlys);
-      config.requireds = [];
-      config.readonlys = [];
+        .concat(this.filtraAzioni(config.requireds))
+        .concat(this.filtraAzioni(config.readonlys));
+      config.requireds = this.filtraAltreAzioni(config.requireds);
+      config.readonlys = this.filtraAltreAzioni(config.readonlys);
     }
     if (destList == "requireds") {
       config.requireds = config.requireds
-        .concat(config.optionals)
-        .concat(config.readonlys);
-      config.optionals = [];
-      config.readonlys = [];
+        .concat(this.filtraAzioni(config.optionals))
+        .concat(this.filtraAzioni(config.readonlys));
+      config.optionals = this.filtraAltreAzioni(config.optionals);
+      config.readonlys = this.filtraAltreAzioni(config.readonlys);
     }
     if (destList == "readonlys") {
       config.readonlys = config.readonlys
-        .concat(config.requireds)
-        .concat(config.optionals);
-      config.requireds = [];
-      config.optionals = [];
+        .concat(this.filtraAzioni(config.requireds))
+        .concat(this.filtraAzioni(config.optionals));
+      config.requireds = this.filtraAltreAzioni(config.requireds);
+      config.optionals = this.filtraAltreAzioni(config.optionals);
     }
   }
 
   SpostaFinali(config: Config, destList: string) {
     if (destList == "optionals") {
       config.optionals = config.optionals
-        .concat(config.requireds.filter(x => x.tipo == "F"))
-        .concat(config.readonlys.filter(x => x.tipo == "F"));
-      config.requireds = config.requireds.filter(x => x.tipo != "F");
-      config.readonlys = config.readonlys.filter(x => x.tipo != "F");
+        .concat(this.filtraAzioni(config.requireds.filter(x => x.tipo == "F")))
+        .concat(this.filtraAzioni(config.readonlys.filter(x => x.tipo == "F")));
+      config.requireds = this.filtraAltreAzioniONonFinali(config.requireds);
+      config.readonlys = this.filtraAltreAzioniONonFinali(config.readonlys);
     }
     if (destList == "requireds") {
       config.requireds = config.requireds
-        .concat(config.optionals.filter(x => x.tipo == "F"))
-        .concat(config.readonlys.filter(x => x.tipo == "F"));
-      config.optionals = config.optionals.filter(x => x.tipo != "F");
-      config.readonlys = config.readonlys.filter(x => x.tipo != "F");
+        .concat(this.filtraAzioni(config.optionals.filter(x => x.tipo == "F")))
+        .concat(this.filtraAzioni(config.readonlys.filter(x => x.tipo == "F")));
+      config.optionals = this.filtraAltreAzioniONonFinali(config.optionals);
+      config.readonlys = this.filtraAltreAzioniONonFinali(config.readonlys);
     }
     if (destList == "readonlys") {
       config.readonlys = config.readonlys
-        .concat(config.requireds.filter(x => x.tipo == "F"))
-        .concat(config.optionals.filter(x => x.tipo == "F"));
-      config.requireds = config.requireds.filter(x => x.tipo != "F");
-      config.optionals = config.optionals.filter(x => x.tipo != "F");
+        .concat(this.filtraAzioni(config.requireds.filter(x => x.tipo == "F")))
+        .concat(this.filtraAzioni(config.optionals.filter(x => x.tipo == "F")));
+      config.requireds = this.filtraAltreAzioniONonFinali(config.requireds);
+      config.optionals = this.filtraAltreAzioniONonFinali(config.optionals);
     }
   }
 
